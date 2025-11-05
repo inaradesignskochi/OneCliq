@@ -1,0 +1,51 @@
+{
+  "name": "1cliq-trade-app",
+  "version": "1.0.0",
+  "description": "1Cliq Trading Application - A comprehensive trading platform with one-click execution",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "deploy": "npm run build && netlify deploy --prod"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.2.96",
+    "@vueuse/core": "^10.4.1",
+    "axios": "^1.5.0",
+    "jwt-decode": "^3.1.2",
+    "pinia": "^2.1.6",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.4",
+    "vuetify": "^3.3.14"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.3.4",
+    "@vitest/ui": "^0.34.4",
+    "@vue/test-utils": "^2.4.6",
+    "eslint": "^8.48.0",
+    "eslint-plugin-vue": "^9.17.0",
+    "jsdom": "^27.1.0",
+    "netlify-cli": "^16.3.1",
+    "vite": "^4.4.9",
+    "vitest": "^0.34.4"
+  },
+  "keywords": [
+    "trading",
+    "finance",
+    "vue",
+    "vite",
+    "responsive",
+    "oauth",
+    "google-auth"
+  ],
+  "author": "1Cliq Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
