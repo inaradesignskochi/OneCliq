@@ -119,6 +119,4 @@ test-results/
 *.orig
 
 # Package lock files (use npm ci instead)
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+// ...
