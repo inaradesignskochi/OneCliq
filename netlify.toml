@@ -14,7 +14,7 @@
 [context.production.environment]
   VITE_GOOGLE_CLIENT_ID = "${VITE_GOOGLE_CLIENT_ID}"
   VITE_API_BASE_URL = "${VITE_API_BASE_URL}"
-  VITE_REDIRECT_URI = "${VITE_REDIRECT_URI}"
+  VITE_REDIRECT_URI = "https://1cliq.netlify.app/auth/callback"
 
 [context.deploy-preview.environment]
   VITE_GOOGLE_CLIENT_ID = "${VITE_GOOGLE_CLIENT_ID}"
