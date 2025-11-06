@@ -53,7 +53,7 @@ export const useAuthStore = defineStore('auth', () => {
   const initializeGoogleAuth = async () => {
     // Google OAuth 2.0 configuration
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID'
-    const redirectUri = `${window.location.origin}/auth/callback`
+    const redirectUri = import.meta.env.VITE_REDIRECT_URI || `${window.location.origin}/auth/callback`
     const scope = 'openid email profile'
     const responseType = 'code'
     const state = generateRandomState()
@@ -85,19 +85,21 @@ export const useAuthStore = defineStore('auth', () => {
         throw new Error('Invalid state parameter')
       }
       
-      // Exchange code for tokens (this would typically be done server-side)
-      // For demo purposes, we'll simulate a successful authentication
-      const mockUser = {
-        id: '12345',
-        email: 'user@example.com',
-        name: 'Demo User',
-        picture: 'https://via.placeholder.com/150'
+      // Exchange code via Netlify Function (server-side)
+      const url = `/.netlify/functions/auth-callback?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}`
+      const res = await fetch(url, { method: 'GET' })
+      if (!res.ok) {
+        const errText = await res.text()
+        throw new Error(`Authentication failed: ${errText}`)
       }
-      
-      const mockToken = 'mock_jwt_token_' + Date.now()
-      
-      setUser(mockUser)
-      setToken(mockToken)
+      const data = await res.json()
+      if (!data || !data.id_token) {
+        throw new Error('Invalid authentication response')
+      }
+
+      // Persist user and token (ID token)
+      setUser(data.user)
+      setToken(data.id_token)
       
       // Clear stored state
       sessionStorage.removeItem('oauth_state')
@@ -125,18 +127,21 @@ export const useAuthStore = defineStore('auth', () => {
     // Check if token exists and is valid
     const storedToken = localStorage.getItem('token')
     if (storedToken) {
-      // In a real app, you would validate the token with your backend
-      // For now, we'll simulate a valid user
-      if (!user.value) {
-        const mockUser = {
-          id: '12345',
-          email: 'user@example.com',
-          name: 'Demo User',
-          picture: 'https://via.placeholder.com/150'
-        }
-        setUser(mockUser)
-        setToken(storedToken)
-      }
+      // Fetch profile from Netlify function using token
+      fetch('/.netlify/functions/user-profile', {
+        headers: { Authorization: `Bearer ${storedToken}` }
+      })
+        .then(async (res) => {
+          if (!res.ok) throw new Error('Failed to fetch profile')
+          const data = await res.json()
+          if (data && data.user) {
+            setUser(data.user)
+            setToken(storedToken)
+          }
+        })
+        .catch((e) => {
+          console.warn('Auth status check failed:', e.message)
+        })
     }
   }
 
